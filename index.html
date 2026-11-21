@@ -378,11 +378,22 @@
     </style>
   
 <style>
-/* Eddie mobile patch 2026-11-21: stop sideways overflow on phones */
+/* Eddie mobile patch v2 2026-11-21: phone rendering hardening */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 html, body { overflow-x: hidden !important; }
 body { position: relative; }
 img, svg, video, canvas { max-width: 100%; }
 h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
+@media (hover: none) {
+  #dashCard { transform: none !important; }
+}
+@media (max-width: 560px) {
+  .route-row { flex-wrap: wrap; }
+  .route-row .st { margin-left: 0; }
+  .dash { box-shadow: 0 30px 60px rgba(0, 0, 0, .5); }
+  .hero h1 { font-size: 27px; }
+  .hero p.lede { font-size: 16px; }
+}
 </style>
 </head>
   <body>
