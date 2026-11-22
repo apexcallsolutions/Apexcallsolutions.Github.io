@@ -415,12 +415,12 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
           <a href="#publishers">For Publishers</a>
           <a href="#verticals">Verticals</a>
           <a href="#contact">Contact</a>
-          <a class="btn btn-blue btn-small m-cta" href="#buyers">Buy Calls</a>
-          <a class="btn btn-outline btn-small m-cta" href="#publishers">Sell Traffic</a>
+          <a class="btn btn-blue btn-small m-cta" href="#buyers">We Want to Buy Calls</a>
+          <a class="btn btn-outline btn-small m-cta" href="#publishers">We Want to Sell Calls</a>
         </nav>
         <div class="header-ctas">
-          <a class="btn btn-blue btn-small" href="#buyers">Buy Calls</a>
-          <a class="btn btn-outline btn-small" href="#publishers">Sell Traffic</a>
+          <a class="btn btn-blue btn-small" href="#buyers">We Want to Buy Calls</a>
+          <a class="btn btn-outline btn-small" href="#publishers">We Want to Sell Calls</a>
         </div>
         <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">☰</button>
       </div>
@@ -435,8 +435,8 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
             <h1>Exclusive, High-Intent Inbound Calls for <span class="hl">US Home Service Businesses.</span></h1>
             <p class="lede">We connect vetted, TCPA-compliant traffic partners with direct US contractors and enterprise buyers through real-time, geo-targeted call routing.</p>
             <div class="hero-ctas">
-              <a class="btn btn-blue" href="#buyers">I Want to Buy Calls</a>
-              <a class="btn btn-outline" href="#publishers">I Want to Sell Calls</a>
+              <a class="btn btn-blue" href="#buyers">We Want to Buy Calls</a>
+              <a class="btn btn-outline" href="#publishers">We Want to Sell Calls</a>
             </div>
             <div class="hero-points">
               <span><svg viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>100% exclusive calls</span>
@@ -599,8 +599,8 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
             </ul>
           </div>
           <form class="app" id="buyerForm">
-            <h3>Buyer Inquiry</h3>
-            <p class="hint">Tell us where you want calls. Submitting opens a pre-filled email in your own email app, addressed to our team — just press send there.</p>
+            <h3>We Want to Buy Calls</h3>
+            <p class="hint">Tell us where you want calls. Submitting sends your inquiry straight to our team — we reply by email or WhatsApp.</p>
             <div class="two-fields">
               <div class="field">
                 <label for="bName">Full Name *</label>
@@ -643,7 +643,7 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
               <button class="btn btn-blue" type="submit">Request Buyer Account</button>
             </div>
             <div class="form-note" id="buyerNote" role="status">
-              <b>Your email app is opening</b> with your buyer inquiry pre-filled and addressed to <b>apexcallsolutions.pk@gmail.com</b> — just press <b>Send</b> there to deliver it. If no email app opened, copy your inquiry and send it manually, or message us on WhatsApp.
+              <b>Thank you — your inquiry has been sent</b> to our team at <b>apexcallsolutions.pk@gmail.com</b>. We'll get back to you shortly. If you don't hear from us within one business day, copy your inquiry below and email it to us, or message us on WhatsApp.
               <div class="row">
                 <button class="btn btn-ghost btn-small" type="button" id="buyerCopy">Copy Inquiry Text</button>
                 <a class="btn btn-wa btn-small" href="https://wa.me/923163909916" target="_blank" rel="noopener">WhatsApp Us Instead</a>
@@ -658,8 +658,8 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
       <section class="block alt" id="publishers">
         <div class="wrap split">
           <form class="app" id="pubForm">
-            <h3>Publisher Application</h3>
-            <p class="hint">Apply to route your home service traffic through Apex. Submitting opens a pre-filled email in your own email app, addressed to our team — just press send there.</p>
+            <h3>We Want to Sell Calls</h3>
+            <p class="hint">Apply to route your home service traffic through Apex. Submitting sends your application straight to our team — we reply by email or WhatsApp.</p>
             <div class="two-fields">
               <div class="field">
                 <label for="pName">Contact Name *</label>
@@ -704,7 +704,7 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
               <button class="btn btn-green" type="submit">Apply as a Publisher</button>
             </div>
             <div class="form-note" id="pubNote" role="status">
-              <b>Your email app is opening</b> with your publisher application pre-filled and addressed to <b>apexcallsolutions.pk@gmail.com</b> — just press <b>Send</b> there to deliver it. If no email app opened, copy your application and send it manually, or message us on WhatsApp.
+              <b>Thank you — your application has been sent</b> to our team at <b>apexcallsolutions.pk@gmail.com</b>. We'll get back to you shortly. If you don't hear from us within one business day, copy your application below and email it to us, or message us on WhatsApp.
               <div class="row">
                 <button class="btn btn-ghost btn-small" type="button" id="pubCopy">Copy Application Text</button>
                 <a class="btn btn-wa btn-small" href="https://wa.me/923163909916" target="_blank" rel="noopener">WhatsApp Us Instead</a>
@@ -999,7 +999,7 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
           }
         }
 
-        /* ---- Forms -> pre-filled email (mailto) ---- */
+        /* ---- Forms -> Formspree direct submit (mailto fallback) ---- */
         function triggerMailto(url) {
           var a = document.createElement("a");
           a.href = url;
@@ -1007,6 +1007,17 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
+        }
+        var FORMSPREE_ENDPOINT = "https://formspree.io/f/xnpdgqby";
+        function submitForm(subject, lines, replyTo) {
+          var mailtoUrl = "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(lines.join("\n"));
+          if (!window.fetch) { triggerMailto(mailtoUrl); return; }
+          fetch(FORMSPREE_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify({ _subject: subject, _replyto: replyTo || "", message: lines.join("\n") })
+          }).then(function (r) { if (!r.ok) triggerMailto(mailtoUrl); })
+            .catch(function () { triggerMailto(mailtoUrl); });
         }
         var lastBuyerText = "", lastPubText = "";
 
@@ -1028,7 +1039,7 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
           var subject = "Buyer Account Request — " + val("bCompany");
           lastBuyerText = "Subject: " + subject + "\n\n" + lines.join("\n");
           document.getElementById("buyerNote").classList.add("show");
-          triggerMailto("mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(lines.join("\n")));
+          submitForm(subject, lines, val("bEmail"));
         });
         document.getElementById("buyerCopy").addEventListener("click", function () {
           copyText(lastBuyerText, document.getElementById("buyerCopyNote"), "Inquiry copied — paste it into an email to " + EMAIL + ".");
@@ -1053,7 +1064,7 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
           var subject = "Publisher Application — " + val("pAgency");
           lastPubText = "Subject: " + subject + "\n\n" + lines.join("\n");
           document.getElementById("pubNote").classList.add("show");
-          triggerMailto("mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(lines.join("\n")));
+          submitForm(subject, lines, val("pEmail"));
         });
         document.getElementById("pubCopy").addEventListener("click", function () {
           copyText(lastPubText, document.getElementById("pubCopyNote"), "Application copied — paste it into an email to " + EMAIL + ".");
