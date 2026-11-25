@@ -723,7 +723,7 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
               <button class="btn btn-blue" type="submit">Request Buyer Account</button>
             </div>
             <div class="form-note" id="buyerNote" role="status">
-              <b>Thank you — your inquiry has been sent</b> to our team at <b>apexcallsolutions.pk@gmail.com</b>. We'll get back to you shortly. If you don't hear from us within one business day, copy your inquiry below and email it to us, or message us on WhatsApp.
+              <span id="buyerNoteMsg"><b>Thank you — your inquiry has been sent</b> to our team at <b>apexcallsolutions.pk@gmail.com</b>. We'll get back to you shortly.</span> If you don't hear from us within one business day, copy your inquiry below and email it to us, or message us on WhatsApp.
               <div class="row">
                 <button class="btn btn-ghost btn-small" type="button" id="buyerCopy">Copy Inquiry Text</button>
                 <a class="btn btn-wa btn-small" href="https://wa.me/923163909916" target="_blank" rel="noopener">WhatsApp Us Instead</a>
@@ -784,7 +784,7 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
               <button class="btn btn-green" type="submit">Apply as a Publisher</button>
             </div>
             <div class="form-note" id="pubNote" role="status">
-              <b>Thank you — your application has been sent</b> to our team at <b>apexcallsolutions.pk@gmail.com</b>. We'll get back to you shortly. If you don't hear from us within one business day, copy your application below and email it to us, or message us on WhatsApp.
+              <span id="pubNoteMsg"><b>Thank you — your application has been sent</b> to our team at <b>apexcallsolutions.pk@gmail.com</b>. We'll get back to you shortly.</span> If you don't hear from us within one business day, copy your application below and email it to us, or message us on WhatsApp.
               <div class="row">
                 <button class="btn btn-ghost btn-small" type="button" id="pubCopy">Copy Application Text</button>
                 <a class="btn btn-wa btn-small" href="https://wa.me/923163909916" target="_blank" rel="noopener">WhatsApp Us Instead</a>
@@ -1215,25 +1215,16 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
           }
         }
 
-        /* ---- Forms -> Formspree direct submit (mailto fallback) ---- */
-        function triggerMailto(url) {
-          var a = document.createElement("a");
-          a.href = url;
-          a.style.display = "none";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        }
+        /* ---- Forms -> Formspree AJAX submit; on-page confirmation only after Formspree accepts ---- */
         var FORMSPREE_ENDPOINT = "https://formspree.io/f/xnpdgqby";
-        function submitForm(subject, lines, replyTo) {
-          var mailtoUrl = "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(lines.join("\n"));
-          if (!window.fetch) { triggerMailto(mailtoUrl); return; }
+        function submitForm(subject, lines, replyTo, onOk, onFail) {
+          if (!window.fetch) { onFail(); return; }
           fetch(FORMSPREE_ENDPOINT, {
             method: "POST",
             headers: { "Content-Type": "application/json", "Accept": "application/json" },
             body: JSON.stringify({ _subject: subject, _replyto: replyTo || "", message: lines.join("\n") })
-          }).then(function (r) { if (!r.ok) triggerMailto(mailtoUrl); })
-            .catch(function () { triggerMailto(mailtoUrl); });
+          }).then(function (r) { if (r.ok) { onOk(); } else { onFail(); } })
+            .catch(function () { onFail(); });
         }
         var lastBuyerText = "", lastPubText = "";
 
@@ -1254,8 +1245,19 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
           ];
           var subject = "Buyer Account Request — " + val("bCompany");
           lastBuyerText = "Subject: " + subject + "\n\n" + lines.join("\n");
-          document.getElementById("buyerNote").classList.add("show");
-          submitForm(subject, lines, val("bEmail"));
+          var bForm = document.getElementById("buyerForm");
+          var bBtn = bForm.querySelector("button[type='submit']");
+          var bBtnText = bBtn.textContent;
+          bBtn.disabled = true; bBtn.textContent = "Sending…";
+          submitForm(subject, lines, val("bEmail"), function () {
+            document.getElementById("buyerNote").classList.add("show");
+            bForm.reset();
+            bBtn.disabled = false; bBtn.textContent = bBtnText;
+          }, function () {
+            document.getElementById("buyerNoteMsg").innerHTML = "<b>Sorry — the form could not be sent automatically.</b> Please copy your inquiry below and email it to us, or message us on WhatsApp — we'll take it from there.";
+            document.getElementById("buyerNote").classList.add("show");
+            bBtn.disabled = false; bBtn.textContent = bBtnText;
+          });
         });
         document.getElementById("buyerCopy").addEventListener("click", function () {
           copyText(lastBuyerText, document.getElementById("buyerCopyNote"), "Inquiry copied — paste it into an email to " + EMAIL + ".");
@@ -1279,8 +1281,19 @@ h1, h2, h3, p, a, li, span { overflow-wrap: break-word; }
           ];
           var subject = "Publisher Application — " + val("pAgency");
           lastPubText = "Subject: " + subject + "\n\n" + lines.join("\n");
-          document.getElementById("pubNote").classList.add("show");
-          submitForm(subject, lines, val("pEmail"));
+          var pForm = document.getElementById("pubForm");
+          var pBtn = pForm.querySelector("button[type='submit']");
+          var pBtnText = pBtn.textContent;
+          pBtn.disabled = true; pBtn.textContent = "Sending…";
+          submitForm(subject, lines, val("pEmail"), function () {
+            document.getElementById("pubNote").classList.add("show");
+            pForm.reset();
+            pBtn.disabled = false; pBtn.textContent = pBtnText;
+          }, function () {
+            document.getElementById("pubNoteMsg").innerHTML = "<b>Sorry — the form could not be sent automatically.</b> Please copy your application below and email it to us, or message us on WhatsApp — we'll take it from there.";
+            document.getElementById("pubNote").classList.add("show");
+            pBtn.disabled = false; pBtn.textContent = pBtnText;
+          });
         });
         document.getElementById("pubCopy").addEventListener("click", function () {
           copyText(lastPubText, document.getElementById("pubCopyNote"), "Application copied — paste it into an email to " + EMAIL + ".");
